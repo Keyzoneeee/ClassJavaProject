@@ -20,7 +20,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: "${params.CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     git credentialsId: "${params.CREDENTIALS_ID}", 
                         url: 'https://github.com/Keyzoneeee/ClassJavaProject.git', 
-                        username: USERNAME, password: PASSWORD
+                        username: Keyzoneeee, password: ghp_yFATLc3IGHsk68KLFSbTXg5asHrURO2ZYeM
                 }
             } 
         } 
