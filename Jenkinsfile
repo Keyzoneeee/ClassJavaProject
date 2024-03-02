@@ -1,5 +1,9 @@
- pipeline {
+pipeline {
     agent any
+    
+    options {
+        skipDefaultCheckout() // Skip default checkout to perform custom Git configuration
+    }
     
     tools {
         jdk 'myjava' 
@@ -9,7 +13,7 @@
     stages {
         stage('Clone Repo') { 
             steps { 
-                git 'https://github.com/Keyzoneeee/ClassJavaProject.git' 
+                git credentialsId: 'your-credentials-id', url: 'https://github.com/Keyzoneeee/ClassJavaProject.git' 
             } 
         } 
          
@@ -21,6 +25,12 @@
          
         stage('Unit Testing') { 
             steps { 
+                withCredentials([usernamePassword(credentialsId: 'your-credentials-id', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    // Use credentials here, e.g., for authentication
+                    sh 'echo "Username: $USERNAME"'
+                    sh 'echo "Password: $PASSWORD"'
+                }
+                
                 sh 'mvn test' 
             } 
         } 
@@ -31,7 +41,7 @@
             } 
         } 
          
-        stage('code coverage') { 
+        stage('Code coverage') { 
             steps { 
                 sh 'mvn cobertura:cobertura -Dcobertura.report.format=xml' 
             } 
