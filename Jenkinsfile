@@ -5,6 +5,10 @@ pipeline {
         skipDefaultCheckout() // Skip default checkout to perform custom Git configuration
     }
     
+    parameters {
+        string(name: 'CREDENTIALS_ID', defaultValue: 'your-credentials-id', description: 'Enter your Jenkins credentials ID')
+    }
+    
     tools {
         jdk 'myjava' 
         maven 'mymaven' 
@@ -13,7 +17,11 @@ pipeline {
     stages {
         stage('Clone Repo') { 
             steps { 
-                git credentialsId: 'your-credentials-id', url: 'https://github.com/Keyzoneeee/ClassJavaProject.git' 
+                withCredentials([usernamePassword(credentialsId: "${params.CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    git credentialsId: "${params.CREDENTIALS_ID}", 
+                        url: 'https://github.com/Keyzoneeee/ClassJavaProject.git', 
+                        username: USERNAME, password: PASSWORD
+                }
             } 
         } 
          
@@ -25,12 +33,6 @@ pipeline {
          
         stage('Unit Testing') { 
             steps { 
-                withCredentials([usernamePassword(credentialsId: 'your-credentials-id', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    // Use credentials here, e.g., for authentication
-                    sh 'echo "Username: $USERNAME"'
-                    sh 'echo "Password: $PASSWORD"'
-                }
-                
                 sh 'mvn test' 
             } 
         } 
