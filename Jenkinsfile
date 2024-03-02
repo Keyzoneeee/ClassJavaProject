@@ -1,65 +1,46 @@
-pipeline {
-    tools {
-        jdk 'myjava'
-        maven 'mymaven'
-    }
-    
+ pipeline {
     agent any
     
+    tools {
+        jdk 'myjava' 
+        maven 'mymaven' 
+    } 
+     
     stages {
-        stage('Checkout') {
-            agent {
-                label 'Master'
-            }
-            steps {
-                echo 'Cloning...'
-                git 'https://github.com/Keyzoneeee/ClassJavaProject.git'
-            }
-        }
-        
-        stage('Compile') {
-            agent {
-                label 'Slave_1'
-            }
-            steps {
-                echo 'Compiling...'
-                sh 'mvn compile'
-            }
-        }
-        
-        stage('CodeReview') {
-            agent {
-                label 'Slave_1'
-            }
-            steps {
-                echo 'Code Review...'
-                sh 'mvn pmd:pmd'
-            }
-        }
-        
-        stage('UnitTest') {
-            agent {
-                label 'Slave_1'
-            }
-            steps {
-                echo 'Testing...'
-                sh 'mvn test'
-            }
-            post {
-                success {
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
-        }
-        
-        stage('Package') {
-            agent {
-                label 'Master'
-            }
-            steps {
-                echo 'Packaging...'
-                sh 'mvn package'
-            }
-        }
-    }
+        stage('Clone Repo') { 
+            steps { 
+                git 'https://github.com/Keyzoneeee/ClassJavaProject.git' 
+            } 
+        } 
+         
+        stage('Compile the code') { 
+            steps { 
+                sh 'mvn compile' 
+            } 
+        } 
+         
+        stage('Unit Testing') { 
+            steps { 
+                sh 'mvn test' 
+            } 
+        } 
+         
+        stage('Code Analysis') { 
+            steps { 
+                sh 'mvn pmd:pmd' 
+            } 
+        } 
+         
+        stage('code coverage') { 
+            steps { 
+                sh 'mvn cobertura:cobertura -Dcobertura.report.format=xml' 
+            } 
+        } 
+         
+        stage('Build the artifact') { 
+            steps { 
+                sh 'mvn package' 
+            } 
+        } 
+    } 
 }
