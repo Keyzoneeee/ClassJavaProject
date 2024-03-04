@@ -1,10 +1,10 @@
 pipeline {
-    agent any
-    
     tools {
         jdk 'myjava'
         maven 'mymaven'
     } 
+    
+    agent any
     
     stages {
         stage('Clone Repo') {
@@ -16,6 +16,12 @@ pipeline {
         stage('Compile the code') {
             steps {
                 sh 'mvn compile'
+            }
+        }
+        
+        stage('Unit Testing') {
+            steps {
+                sh 'mvn test'
             }
         }
         
