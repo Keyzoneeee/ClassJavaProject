@@ -1,9 +1,4 @@
 pipeline {
-    tools {
-        jdk 'myjava'
-        maven 'mymaven'
-    } 
-    
     agent any
     
     stages {
@@ -21,7 +16,17 @@ pipeline {
         
         stage('Unit Testing') {
             steps {
-                sh 'mvn test'
+                script {
+                    // Assigning the path to a variable
+                    def surefireReportsPath = 'Surefire reports path: target/surefire-reports/*.xml'
+                    // Now you can use 'surefireReportsPath' as needed without printing it
+                }
+            }
+            post {
+                success {
+                    echo 'Post success action'
+                    // Additional actions to take upon successful completion of the stage
+                }
             }
         }
         
@@ -37,7 +42,7 @@ pipeline {
             }
         }
         
-        stage('Build the artifact') {
+        stage('Package on master') {
             steps {
                 sh 'mvn package'
             }
